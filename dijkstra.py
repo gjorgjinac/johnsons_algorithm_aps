@@ -15,8 +15,8 @@ def Dijkstra(graph: WeightedDirectedGraph, source_node):
     current_node = PriorityNode(source_node, 0)
     while current_node is not None:
         current_node_name = current_node.name
-        for node in graph.nodes:
-            if node in adjacency_list[current_node_name].keys() and shortest_distances[node] > (shortest_distances[current_node_name] + adjacency_list[current_node_name][node]):
+        for node in adjacency_list[current_node_name].keys():
+            if shortest_distances[node] > (shortest_distances[current_node_name] + adjacency_list[current_node_name][node]):
                 new_shortest_distance = shortest_distances[current_node_name] + adjacency_list[current_node_name][node]
                 shortest_distances[node] = new_shortest_distance
                 predecessors[node] = current_node_name
