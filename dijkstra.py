@@ -12,16 +12,15 @@ def Dijkstra(graph: WeightedDirectedGraph, source_node):
 
     adjacency_list = graph.get_adjacency_list()
     min_queue = MinPriorityQueue()
-    current_node = PriorityNode(source_node, 0)
-    while current_node is not None:
-        current_node_name = current_node.name
+    current_node_name = source_node
+    while current_node_name is not None:
         for node in adjacency_list[current_node_name].keys():
             if shortest_distances[node] > (shortest_distances[current_node_name] + adjacency_list[current_node_name][node]):
                 new_shortest_distance = shortest_distances[current_node_name] + adjacency_list[current_node_name][node]
                 shortest_distances[node] = new_shortest_distance
                 predecessors[node] = current_node_name
                 min_queue.push(node, new_shortest_distance)
-        current_node = min_queue.pop()
+        current_node_name = min_queue.pop().name
     print(f'Dijkstra from source node {source_node}')
     for node in sorted(graph.nodes):
         print(f'Node {node}: {str(shortest_distances[node])} through {predecessors[node]}')
