@@ -11,8 +11,6 @@ class MinPriorityQueue:
 
     def push(self, name, priority):
         node = PriorityNode(name, priority)
-        self.delete_if_exists(name)
-
         if self.is_empty():
             self.queue.append(node)
         else:
@@ -20,10 +18,12 @@ class MinPriorityQueue:
                 if node.priority >= self.queue[i].priority:
                     if i == self.size() - 1:
                         self.queue.insert(i + 1, node)
+                        break
                     else:
                         continue
                 else:
                     self.queue.insert(i, node)
+                    break
 
     def pop(self):
         if self.is_empty():
@@ -40,10 +40,3 @@ class MinPriorityQueue:
     def is_empty(self):
         return self.size()==0
 
-    def delete_if_exists(self, name):
-        index_of_existing_node = -1
-        for i in range(0, self.size()):
-            if self.queue[i].name == name:
-                index_of_existing_node = i
-        if index_of_existing_node > -1:
-            self.queue.pop(index_of_existing_node)
