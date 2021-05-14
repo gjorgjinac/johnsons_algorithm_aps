@@ -6,7 +6,6 @@ from priority_queue import MinPriorityQueue
 
 
 def Dijkstra(graph: WeightedDirectedGraph, source_node):
-    visited = defaultdict(lambda: False)
     shortest_distances = defaultdict(lambda: MAX_INT)
     shortest_distances[source_node] = 0
     predecessors = defaultdict(lambda: None)
@@ -23,14 +22,12 @@ def Dijkstra(graph: WeightedDirectedGraph, source_node):
                 f'Cannot find paths to all nodes from node {source_node}. Found outgoing edges to nodes: {adjacency_matrix[source_node].keys()}')
             return
         current_node = current_node.name
-        visited[current_node] = True
         for node in graph.nodes:
-            if not visited[node] and node in adjacency_matrix[current_node].keys():
-                if shortest_distances[node] > (shortest_distances[current_node] + adjacency_matrix[current_node][node]):
-                    new_shortest_distance = shortest_distances[current_node] + adjacency_matrix[current_node][node]
-                    shortest_distances[node] = new_shortest_distance
-                    predecessors[node] = current_node
-                    min_queue.push(node, new_shortest_distance)
+            if node in adjacency_matrix[current_node].keys() and shortest_distances[node] > (shortest_distances[current_node] + adjacency_matrix[current_node][node]):
+                new_shortest_distance = shortest_distances[current_node] + adjacency_matrix[current_node][node]
+                shortest_distances[node] = new_shortest_distance
+                predecessors[node] = current_node
+                min_queue.push(node, new_shortest_distance)
     print(f'Dijkstra from source node {source_node}')
     for node in sorted(graph.nodes):
         print(f'Node {node}: {str(shortest_distances[node])} through {predecessors[node]}')
