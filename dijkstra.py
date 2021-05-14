@@ -5,18 +5,6 @@ from graph import WeightedDirectedGraph, WeightedEdge
 from priority_queue import MinPriorityQueue
 
 
-class NoNeighboursException(Exception):
-    pass
-
-
-def find_closest_node(distances, visited):
-    minimum_distance, closest_node = MAX_INT, None
-    for node in distances.keys():
-        if minimum_distance > distances[node] and not visited[node]:
-            minimum_distance, closest_node = distances[node], node
-    return closest_node
-
-
 def Dijkstra(graph: WeightedDirectedGraph, source_node):
     visited = defaultdict(lambda: False)
     shortest_distances = defaultdict(lambda: MAX_INT)
