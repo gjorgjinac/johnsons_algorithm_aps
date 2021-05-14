@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from config import MAX_INT
 from graph import WeightedDirectedGraph, WeightedEdge
-from priority_queue import MinPriorityQueue
+from priority_queue import MinPriorityQueue, PriorityNode
 
 
 def Dijkstra(graph: WeightedDirectedGraph, source_node):
@@ -10,24 +10,18 @@ def Dijkstra(graph: WeightedDirectedGraph, source_node):
     shortest_distances[source_node] = 0
     predecessors = defaultdict(lambda: None)
 
-    adjacency_matrix = graph.get_adjacency_matrix()
+    adjacency_list = graph.get_adjacency_list()
     min_queue = MinPriorityQueue()
-
-    min_queue.push(source_node, 0)
-
-    for count in range(graph.node_count):
-        current_node = min_queue.pop()
-        if current_node is None:
-            print(
-                f'Cannot find paths to all nodes from node {source_node}. Found outgoing edges to nodes: {adjacency_matrix[source_node].keys()}')
-            return
-        current_node = current_node.name
+    current_node = PriorityNode(source_node, 0)
+    while current_node is not None:
+        current_node_name = current_node.name
         for node in graph.nodes:
-            if node in adjacency_matrix[current_node].keys() and shortest_distances[node] > (shortest_distances[current_node] + adjacency_matrix[current_node][node]):
-                new_shortest_distance = shortest_distances[current_node] + adjacency_matrix[current_node][node]
+            if node in adjacency_list[current_node_name].keys() and shortest_distances[node] > (shortest_distances[current_node_name] + adjacency_list[current_node_name][node]):
+                new_shortest_distance = shortest_distances[current_node_name] + adjacency_list[current_node_name][node]
                 shortest_distances[node] = new_shortest_distance
-                predecessors[node] = current_node
+                predecessors[node] = current_node_name
                 min_queue.push(node, new_shortest_distance)
+        current_node = min_queue.pop()
     print(f'Dijkstra from source node {source_node}')
     for node in sorted(graph.nodes):
         print(f'Node {node}: {str(shortest_distances[node])} through {predecessors[node]}')
