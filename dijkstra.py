@@ -2,37 +2,42 @@ from collections import defaultdict
 
 from config import MAX_INT
 from graph import WeightedDirectedGraph, WeightedEdge
-from priority_queue import MinPriorityQueue, PriorityNode
+from priority_queue import PriorityNode, MinHeap
 
 
-def Dijkstra(graph: WeightedDirectedGraph, source_node):
+def init_min_heap_with_nodes(source_node, graph):
+    min_heap = MinHeap()
+    min_heap.heap.append(PriorityNode(source_node, 0))
+
+    for index, node in enumerate(list(set(graph.nodes).difference({source_node}))):
+        min_heap.heap.append(PriorityNode(node, MAX_INT))
+        min_heap.node_position[node] = index + 1
+
+    min_heap.node_position[source_node] = 0
+    min_heap.update_priority(source_node, 0)
+    min_heap.size = graph.node_count
+    return min_heap
+
+
+def Dijkstra(graph: WeightedDirectedGraph, source_node, verbose=True):
     shortest_distances = defaultdict(lambda: MAX_INT)
     shortest_distances[source_node] = 0
     predecessors = defaultdict(lambda: None)
-    visited = set()
     adjacency_list = graph.get_adjacency_list()
-    min_queue = MinPriorityQueue()
+    min_heap = init_min_heap_with_nodes(source_node, graph)
 
-    current_node = PriorityNode(source_node, 0)
-    for _ in range(0, graph.node_count):
-        while current_node is not None and current_node.name in visited :
-            current_node = min_queue.pop()
-        if current_node is None:
-            break
-        current_node_name=current_node.name
+    while not min_heap.is_empty():
+        current_node_name=min_heap.pop_min().name
         for node in adjacency_list[current_node_name].keys():
-            if shortest_distances[node] > (
-                    shortest_distances[current_node_name] + adjacency_list[current_node_name][node]):
-                new_shortest_distance = shortest_distances[current_node_name] + adjacency_list[current_node_name][node]
-                shortest_distances[node] = new_shortest_distance
+            new_distance = shortest_distances[current_node_name] + adjacency_list[current_node_name][node]
+            if shortest_distances[node] > new_distance:
+                shortest_distances[node] = new_distance
                 predecessors[node] = current_node_name
-                min_queue.push(node, new_shortest_distance)
-        visited.add(current_node_name)
-
-
-    for node in sorted(graph.nodes):
-        print(f'Node {node}: {str(shortest_distances[node])} through {predecessors[node]}')
-
+                min_heap.update_priority(node, new_distance)
+    if verbose:
+        for node in sorted(graph.nodes):
+            print(f'Node {node}: {str(shortest_distances[node])} through {predecessors[node]}')
+    return shortest_distances, predecessors
 
 if __name__ == '__main__':
     dijkstra_graph = WeightedDirectedGraph(
