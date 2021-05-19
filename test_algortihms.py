@@ -89,13 +89,42 @@ directed_weighted_graph_6 = WeightedDirectedGraph(
 )
 solution_6 = ({'A': 0, 'B': inf, 'C': 2, 'D': inf}, {'A': None, 'B': None, 'C': 'A', 'D': None})
 
+directed_weighted_graph_7 = WeightedDirectedGraph(
+    [
+        WeightedEdge('S', -1, 'A'),
+        WeightedEdge('S', 4, 'B'),
+        WeightedEdge('A', 3, 'B'),
+        WeightedEdge('A', 2, 'D'),
+        WeightedEdge('A', 2, 'C'),
+        WeightedEdge('C', 1, 'A'),
+        WeightedEdge('D', -3, 'C'),
+    ]
+)
+solution_7 = ({'S': 0, 'A': -1, 'B': 2, 'C': -2, 'D': 1}, {'S': None, 'A': 'S', 'B': 'A', 'C': 'D', 'D': 'A'})
+
+directed_weighted_graph_8 = WeightedDirectedGraph(
+    [
+        WeightedEdge('A', 3, 'B'),
+        WeightedEdge('A', 2, 'C'),
+        WeightedEdge('B', 2, 'E'),
+        WeightedEdge('B', 4, 'D'),
+        WeightedEdge('C', 6, 'B'),
+        WeightedEdge('C', 2, 'D'),
+        WeightedEdge('D', 6, 'E'),
+        WeightedEdge('D', 3, 'F'),
+        WeightedEdge('E', 1, 'F'),
+    ]
+)
+solution_8 = ({'A': 0,  'B': 3, 'C': 2, 'D': 4, 'E':5, 'F':6}, {'A': None, 'B': 'A', 'C': 'A', 'D': 'C', 'E': 'B', 'F':'E'})
+
 
 # ----------------------------------------------------------------------------------------------------------------
 
 @pytest.mark.parametrize("graph,starting_node,correct_solution",
                          [(directed_weighted_graph_1, 'A', solution_1), (directed_weighted_graph_2, 'A', solution_2),
                           (directed_weighted_graph_3, 'A', solution_3), (directed_weighted_graph_4, 'A', solution_4),
-                          (directed_weighted_graph_5, 'A', solution_5), (directed_weighted_graph_6, 'A', solution_6)])
+                          (directed_weighted_graph_5, 'A', solution_5), (directed_weighted_graph_6, 'A', solution_6),
+                          (directed_weighted_graph_7, 'S', solution_7)])
 def test_non_negative_cycle_BELLMAN_FORD(graph: WeightedDirectedGraph, starting_node, correct_solution):
     (correct_shortest_distance, correct_predecessors) = correct_solution
     (shortest_distances, predecessors) = BellmanFord(graph, starting_node)
@@ -111,7 +140,8 @@ def test_non_negative_cycle_BELLMAN_FORD(graph: WeightedDirectedGraph, starting_
 @pytest.mark.parametrize("graph,starting_node,correct_solution",
                          [(directed_weighted_graph_1, 'A', solution_1), (directed_weighted_graph_2, 'A', solution_2),
                           (directed_weighted_graph_3, 'A', solution_3), (directed_weighted_graph_4, 'A', solution_4),
-                          (directed_weighted_graph_5, 'A', solution_5), (directed_weighted_graph_6, 'A', solution_6)])
+                          (directed_weighted_graph_5, 'A', solution_5), (directed_weighted_graph_6, 'A', solution_6),
+                          (directed_weighted_graph_8, 'A', solution_8)])
 def test_non_negative_cycle_DIJKSTRA(graph: WeightedDirectedGraph, starting_node, correct_solution):
     (correct_shortest_distance, correct_predecessors) = correct_solution
     (shortest_distances, predecessors) = Dijkstra(graph, starting_node)
@@ -190,7 +220,7 @@ johnsons_solution_4 = {'A': {'A': 0, 'B': -5, 'C': -7, 'D': -7},
 
 @pytest.mark.parametrize("graph,correct_solution",
                          [(johnsons_graph_1, johnsons_solution_1), (johnsons_graph_3, johnsons_solution_3)
-                          , (johnsons_graph_4, johnsons_solution_4)])
+                             , (johnsons_graph_4, johnsons_solution_4)])
 def test_johsons(graph: WeightedDirectedGraph, correct_solution):
     result = JohnsonAlgorithm(graph)
     print(result)
